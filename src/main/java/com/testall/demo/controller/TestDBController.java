@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -76,5 +76,35 @@ public class TestDBController {
 
         return "uploading success";
     }
+
+    /**
+     * 处理文件下载
+     */
+    @RequestMapping("/download")
+    public void downLoad(HttpServletResponse response) throws UnsupportedEncodingException {
+        String filename="账号密码.txt";
+        String filePath = "D:/file" ;
+        File file = new File(filePath + "/" + filename);
+        if(file.exists()){
+            response.setContentType("application/octet-stream");
+            response.setHeader("content-type", "application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(filename,"utf8"));
+            byte[] buffer = new byte[1024];
+            //输出流
+            OutputStream os = null;
+            try(FileInputStream fis= new FileInputStream(file);
+                BufferedInputStream bis = new BufferedInputStream(fis);) {
+                os = response.getOutputStream();
+                int i = bis.read(buffer);
+                while(i != -1){
+                    os.write(buffer);
+                    i = bis.read(buffer);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
