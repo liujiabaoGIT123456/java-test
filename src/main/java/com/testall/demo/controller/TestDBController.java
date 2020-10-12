@@ -1,6 +1,7 @@
 package com.testall.demo.controller;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.testall.demo.service.TestService;
@@ -40,7 +41,7 @@ public class TestDBController {
 
     //测试
     public static void main(String[] args) {
-        ExcelReader reader = ExcelUtil.getReader(FileUtil.file("test.xlsx"));
+
 
     }
 
@@ -93,7 +94,7 @@ public class TestDBController {
             //输出流
             OutputStream os = null;
             try(FileInputStream fis= new FileInputStream(file);
-                BufferedInputStream bis = new BufferedInputStream(fis);) {
+                BufferedInputStream bis = new BufferedInputStream(fis)) {
                 os = response.getOutputStream();
                 int i = bis.read(buffer);
                 while(i != -1){
@@ -104,6 +105,19 @@ public class TestDBController {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 异步处理
+     */
+    @RequestMapping("/async")
+    public String threadExecAsync(){
+        ThreadUtil.execAsync(()->{
+            for(int i=0;i<1000000;i++){
+                System.out.println(i);
+            }
+        });
+        return "成功";
     }
 
 
