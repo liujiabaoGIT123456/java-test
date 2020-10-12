@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class TestDBController {
@@ -27,18 +28,18 @@ public class TestDBController {
 
     //连接数据库测试
     @RequestMapping("/test")
-    public List<Test> test(){
+    public List<Test> test() {
         return testDBDao.test();
     }
 
     //batis-plus测试
     @RequestMapping("/testPlus")
-    public List<Test> testPlus(){
+    public List<Test> testPlus() {
         return testDBDao.testPlus();
     }
 
     //测试
-    public static void main(String[] args){
+    public static void main(String[] args) {
         ExcelReader reader = ExcelUtil.getReader(FileUtil.file("test.xlsx"));
 
     }
@@ -55,16 +56,25 @@ public class TestDBController {
         if (!targetFile.exists()) {
             boolean mkdirs = targetFile.mkdirs();
         }
-        try (FileOutputStream out = new FileOutputStream(filepath + file.getOriginalFilename());){
+        try (FileOutputStream out = new FileOutputStream(filepath + file.getOriginalFilename());) {
             out.write(file.getBytes());
-            //InputStream inputStream = file.getInputStream();
+            InputStream inputStream = file.getInputStream();
+            ExcelReader reader = ExcelUtil.getReader(inputStream);
+            //List<Map<String, Object>> maps = reader.readAll();
+            //List<Map<String, Object>> read = reader.read(0, 1, 2);
+            //for(Map<String, Object> map:read){
+            //    System.out.print("11");
+            //}
+
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.print("文件上传失败!");
             return "uploading failure";
         }
         System.out.print("文件上传成功!");
+
         return "uploading success";
     }
-    
+
 }
