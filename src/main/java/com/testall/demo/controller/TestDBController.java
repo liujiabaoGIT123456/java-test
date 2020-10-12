@@ -111,6 +111,9 @@ public class TestDBController {
         }
     }
 
+    /**
+     * 处理excel下载
+     */
     @RequestMapping("/downLoadExcel")
     public void downLoadExcel(HttpServletResponse response) throws UnsupportedEncodingException {
         response.setContentType("application/octet-stream");
@@ -144,11 +147,8 @@ public class TestDBController {
             List<Map<String,String>> newMaps = new ArrayList<>();
             for (Map<String,String> map : copyMap) {
                 Map<String,String> m = new LinkedHashMap<>();
-                int j = 0;
                 for (String exportRow : split) {
                     m.put(exportRow, map.get(exportRow));
-                    writer.autoSizeColumn(j);
-                    j += 1;
                 }
                 newMaps.add(m);
             }
