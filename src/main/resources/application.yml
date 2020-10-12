@@ -9,3 +9,6 @@ server:
 logging:
   level:
     com.testall.demo.dao : debug
+
+#文件存储路径
+filepath: D:/file/
