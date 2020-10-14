@@ -18,6 +18,7 @@ public class AutoEntity {
         //配置策略
         //1、全局配置
         GlobalConfig gc = new GlobalConfig();
+        gc.setOutputDir("D:\\file");
         gc.setAuthor("liujiabao");	//设置作者姓名
         gc.setOpen(false);
         gc.setFileOverride(false);  //是否覆盖
@@ -34,7 +35,7 @@ public class AutoEntity {
 
         //3、配置包
         PackageConfig pc = new PackageConfig();
-        pc.setParent("\\file");	 //设置生成在哪个父包下
+        //pc.setParent("\\file");	 //设置生成在哪个父包下
         pc.setEntity("pojo");	//设置实体类包名
         pc.setMapper("mapper");
         pc.setService("service");
