@@ -6,6 +6,8 @@ import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.testall.demo.service.TestService;
 import com.testall.demo.entity.Test;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -43,9 +45,26 @@ public class TestDBController {
         return testDBDao.testPlus();
     }
 
+    private static final Algorithm ALGORITHM= Algorithm.HMAC256("d84b297d50f3c726563372e5c3f5c66a");
+    public static String encode() {
+        //通过秘钥生成一个算法
+        String token = JWT.create()
+                //设置签发者
+                //.withIssuer("test")
+                //设置过期时间为一个小时
+                .withExpiresAt(new Date(System.currentTimeMillis()+3*60*60*1000))
+                //设置用户信息
+                .withClaim("name","liqixiu")
+                .withClaim("email","liqixiu@cmschina.com.cn")
+                .withClaim("iat",new Date())
+                //.withClaim("return_to","www.baidu.com")
+                .sign(ALGORITHM);
+        return token;
+    }
+
     //测试
     public static void main(String[] args) {
-
+        System.out.println(encode());
 
     }
 
