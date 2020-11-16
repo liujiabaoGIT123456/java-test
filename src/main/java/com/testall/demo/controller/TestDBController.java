@@ -24,6 +24,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class TestDBController {
@@ -64,7 +66,21 @@ public class TestDBController {
 
     //测试
     public static void main(String[] args) {
-        System.out.println(encode());
+
+
+    }
+
+    //正则分割和获取数据
+    public static void main1(String[] args) {
+        String a="a2019.01 - 2019.01b2c2019.01 - 2019.01d5asdfa2019.01 - asf";
+        String[] split = a.split("[0-9]{4}\\.[0-9]{2}\\s-\\s([0-9]{4}\\.[0-9]{2})?");
+        Arrays.stream(split).forEach(System.out::println);
+
+        Pattern p=Pattern.compile("[0-9]{4}\\.[0-9]{2}\\s-\\s([0-9]{4}\\.[0-9]{2})?");
+        Matcher m=p.matcher("a2019.01 - 2019.01b2c2019.01 - 2019.01d5asdfa2019.01 - asf");
+        while(m.find()) {
+            System.out.println(m.group());
+        }
 
     }
 
