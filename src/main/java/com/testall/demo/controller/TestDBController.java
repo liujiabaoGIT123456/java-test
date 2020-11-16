@@ -2,6 +2,8 @@ package com.testall.demo.controller;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
@@ -66,6 +68,24 @@ public class TestDBController {
 
     //测试
     public static void main(String[] args) {
+
+    }
+
+    //json互转
+    public static void main2(String[] args) {
+        //String jsonStr = JSONUtil.parse(brand).toString();
+        //PmsBrand brandBean = JSONUtil.toBean(jsonStr, PmsBrand.class);
+        List<Map<String,String>> lis=new ArrayList<>();
+        Map<String,String> map=new HashMap<>();
+        map.put("1","2");
+        lis.add(map);
+        String s = JSONUtil.parse(lis).toString();
+        System.out.println(s);
+        List<Map> maps = JSONUtil.toList(new JSONArray(s), Map.class);
+        for(Map map1:maps){
+            map1.keySet().forEach(System.out::println);
+
+        }
 
 
     }
