@@ -28,6 +28,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @RestController
 public class TestDBController {
@@ -68,6 +69,24 @@ public class TestDBController {
 
     //测试
     public static void main(String[] args) {
+
+    }
+
+
+    //list分页
+    public static void main3(String[] args) {
+        List<Map<Integer,Integer>> list=new ArrayList();
+        for(int i=0;i<10;i++){
+            Map map=new HashMap<>();
+            map.put(i,i);
+            list.add(map);
+        }
+        List<Map<Integer,Integer>> collect = list.stream().skip(5*(2-1)).limit(5).collect(Collectors.toList());
+        int i=0;
+        for(Map<Integer,Integer> test:collect){
+            System.out.println(test.get(i));
+            i++;
+        }
 
     }
 
