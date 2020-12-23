@@ -130,13 +130,16 @@ public class TestDBController {
      * 处理文件上传
      */
     @PostMapping(value = "/upload")
-    public String uploading(@RequestParam("file") MultipartFile file) {
+    public String uploading(@RequestParam("file") MultipartFile file) throws IOException {
         File targetFile = new File(filepath);
         if (!targetFile.exists()) {
             boolean mkdirs = targetFile.mkdirs();
         }
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = ExcelUtil.getReader(inputStream);
+        List<List<Object>> read = reader.read();
         try (FileOutputStream out = new FileOutputStream(filepath + file.getOriginalFilename());) {
-            out.write(file.getBytes());
+            //out.write(file.getBytes());
             //InputStream inputStream = file.getInputStream();
             //ExcelReader reader = ExcelUtil.getReader(inputStream);
             //List<Map<String, Object>> maps = reader.readAll();
