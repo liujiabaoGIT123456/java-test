@@ -198,40 +198,38 @@ public class TestDBController {
         OutputStream os = null;
         try {
             os = response.getOutputStream();
-
-
             ExcelWriter writer = ExcelUtil.getWriter();
+
+            List<Map<String, String>> newMaps = new ArrayList<>();
+            Map<String, String> map1 = new LinkedHashMap<>();
+            String[] split = {"债券预警项","判断条件","是否达到预警条件","具体说明","详情备注"};
             int i = 0;
-            String[] split={"年龄","性别","身高"};
             for (String exportRow : split) {
                 writer.addHeaderAlias(exportRow, exportRow).autoSizeColumn(i);
                 i += 1;
+                map1.put(exportRow,i+"");
             }
-            List<Map<String,String>> copyMap=new ArrayList<>();
-            Map<String,String> map1=new HashMap<>();
-            map1.put("年龄","刘佳宝");
-            map1.put("性别","12");
-            map1.put("身高","33");
-            copyMap.add(map1);
-            Map<String,String> map2=new HashMap<>();
-            map2.put("年龄","刘佳宝1");
-            map2.put("性别","12213");
-            map2.put("身高","3313");
-            copyMap.add(map2);
-            List<Map<String,String>> newMaps = new ArrayList<>();
-            for (Map<String,String> map : copyMap) {
-                Map<String,String> m = new LinkedHashMap<>();
-                for (String exportRow : split) {
-                    m.put(exportRow, map.get(exportRow));
-                }
-                newMaps.add(m);
-            }
+            newMaps.add(map1);
+            writer.merge(split.length - 1, "债券违约预警详情展示", true);
+            List<String> a=new ArrayList<>();
+            a.add("说明：发债主体为中信证券。本管理人共有xx只产品持有该主题的债券，产品名分别为xxx、xxx…");
+            a.add("数据更新日期：20200817");
+            writer.writeRow(a);
+            Font font = writer.createFont();
+            font.setColor(Font.COLOR_RED);
+            font.setFontName("宋体"); // 设置字体
+            font.setFontHeightInPoints((short) 10); // 设置字号
+            //第二个参数表示是否忽略头部样式
+            writer.getStyleSet().setFont(font, true);
             writer.write(newMaps);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
             writer.flush(byteArrayOutputStream);
+
             // 关闭writer，释放内存
             writer.close();
             byte[] bytes = byteArrayOutputStream.toByteArray();
+
+
 
 
 
