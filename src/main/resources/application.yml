@@ -9,6 +9,8 @@ server:
 logging:
   level:
     com.testall.demo.dao : debug
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
 
-#文件存储路径
+  #文件存储路径
 filepath: D:/file/
