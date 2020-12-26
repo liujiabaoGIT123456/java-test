@@ -22,4 +22,8 @@ public class TestService {
         List<Test> tests = testDao.selectList(null);
         return tests;
     }
+
+    public void insert(Test test) {
+        testDao.insert(test);
+    }
 }

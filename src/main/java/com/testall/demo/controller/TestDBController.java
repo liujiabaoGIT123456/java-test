@@ -10,8 +10,10 @@ import cn.hutool.poi.excel.ExcelWriter;
 import cn.hutool.poi.excel.StyleSet;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.testall.demo.entity.EnumAll;
 import com.testall.demo.service.TestService;
 import com.testall.demo.entity.Test;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -68,9 +70,7 @@ public class TestDBController {
     }
 
     //测试
-    public static void main(String[] args) {
-        System.out.println();
-    }
+
 
 
     //list分页
@@ -256,6 +256,55 @@ public class TestDBController {
             }
         });
         return "成功";
+    }
+
+
+    /**
+     * 标签转换
+     * @param file
+     * @throws IOException
+     */
+    @RequestMapping("/labelChange")
+    public void labelChange(@RequestParam("file") MultipartFile file) throws IOException {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = ExcelUtil.getReader(inputStream);
+        List<Map<String, Object>> maps = reader.readAll();
+
+        List<Map<String, Object>> values=new ArrayList<>();
+        for(Map<String, Object> map:maps){
+            List<String> collect = map.keySet().stream().map(a -> a + "").collect(Collectors.toList());
+            collect.remove("L_ID");
+            List<String> other = collect.stream().filter(a -> a.contains("其他")).collect(Collectors.toList());
+            List<String> notOther = collect.stream().filter(a -> !a.contains("其他")).collect(Collectors.toList());
+            for(String item:notOther){
+                Object item1 = map.get(item);
+                Object item2 = map.get(item+"（其他）");
+                if((item1==null|| StringUtils.isBlank(item1+""))&&(item2==null|| StringUtils.isBlank(item2+""))){
+                    continue;
+                }
+                if(StringUtils.isBlank(item1+"")){
+                    item1=null;
+                }
+                if(StringUtils.isBlank(item2+"")){
+                    item2=null;
+                }
+                Map<String, Object> label = new HashMap<>();
+                label.put("L_ID",map.get("L_ID"));
+                label.put("LABEL",item);
+                label.put("LABEL_VALUE",item1==null?"":item1);
+                label.put("OTHER_VALUE",item2==null?"":item2);
+                label.put("LABEL_GROUP", EnumAll.LabelEnum.getType(item));
+                values.add(label);
+            }
+        }
+        String s = JSONUtil.parse(values).toString();
+        Test test = new Test();
+        test.setValue(s);
+        test.setId(UUID.randomUUID().toString());
+        testDBDao.insert(test);
+        List<Map> maps1= JSONUtil.toList(new JSONArray(s), Map.class);
+        System.out.println(values.size());
+
     }
 
 

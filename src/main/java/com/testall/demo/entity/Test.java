@@ -13,4 +13,7 @@ public class Test {
 
     @TableField("NAME")
     private String name;
+
+    @TableField("TEST")
+    private String value;
 }
