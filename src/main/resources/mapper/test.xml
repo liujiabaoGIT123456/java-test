@@ -8,7 +8,7 @@
         <result  property = "value"   column = "TEST"/>
     </resultMap>
     <select id="test" resultMap="test123">
-        select * from TEST where id ='bbf5c519-a460-42b9-8989-b7b3a4b9c679'
+        select * from TEST where id ='8349e6dc-216c-49c8-a9e4-dddf7bad82f4'
     </select>
 
     <select id="test1" resultType="com.testall.demo.entity.Test">

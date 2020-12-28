@@ -293,6 +293,7 @@ public class TestDBController {
                 label.put("LABEL_VALUE", item1 == null ? "" : item1);
                 label.put("OTHER_VALUE", item2 == null ? "" : item2);
                 label.put("LABEL_GROUP", EnumAll.LabelEnum.getType(item));
+                label.put("ID",UUID.randomUUID().toString());
                 values.add(label);
             }
         }
@@ -310,7 +311,7 @@ public class TestDBController {
     public void downLoadLabel(HttpServletResponse response) throws UnsupportedEncodingException {
         response.setContentType("application/octet-stream");
         response.setHeader("content-type", "application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("filename.xlsx", "utf8"));
+        response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode("标签.xlsx", "utf8"));
         byte[] buffer = new byte[1024];
         //输出流
         OutputStream os = null;
