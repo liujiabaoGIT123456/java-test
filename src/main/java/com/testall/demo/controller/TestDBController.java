@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,15 +42,25 @@ public class TestDBController {
         this.testDBDao = testDBDao;
     }
 
-    public static void main(String[] args) {
-        List<Integer> list = new ArrayList<>();
-        for (int i = 1; i < 30; i++) {
-            list.add(i);
-        }
-        List<Integer> collect = list.stream().skip(10).limit(10).collect(Collectors.toList());
-        collect.forEach(System.out::println);
+
+    public static void main(String[] args) throws IOException {
+        String str;
+        // 使用 System.in 创建 BufferedReader
+        InputStream in = System.in;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println("输入字符, 输入 'quit' 退出。");
+
+        // 读取字符
+//        do {
+//            //str=br.readLine();
+//            //System.out.println("您输入的字符是:"+str);
+//        } while(!str.equals("quit"));
+        br.close();
+
 
     }
+
+
 
     //连接数据库测试
     @RequestMapping("/test")
@@ -83,7 +94,7 @@ public class TestDBController {
         return token;
     }
 
-    //测试
+
 
 
     //list分页
@@ -374,13 +385,19 @@ public class TestDBController {
         response.setContentType("content-type:octet-stream");
         BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 
-        OutputStream outputStream = response.getOutputStream();
-        byte[] buffer = new byte[1024];
-        int len;
-        while ((len = inputStream.read(buffer)) != -1) { /** 将流中内容写出去 .*/
-            outputStream.write(buffer, 0, len);
 
-        }
+        //转为二进制
+        byte[] bytes = FileCopyUtils.copyToByteArray(inputStream);
+
+        OutputStream outputStream = response.getOutputStream();
+        outputStream.write(bytes);
+//        byte[] buffer = new byte[1024];
+//        int len;
+//        while ((len = inputStream.read(buffer)) != -1) { /** 将流中内容写出去 .*/
+//            outputStream.write(buffer, 0, len);
+//
+//
+//        }
         inputStream.close();
         outputStream.close();
     }
