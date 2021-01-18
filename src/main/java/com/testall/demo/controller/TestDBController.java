@@ -79,6 +79,7 @@ public class TestDBController {
     private static final Algorithm ALGORITHM = Algorithm.HMAC256("d84b297d50f3c726563372e5c3f5c66a");
 
     public static String encode() {
+
         //通过秘钥生成一个算法
         String token = JWT.create()
                 //设置签发者
