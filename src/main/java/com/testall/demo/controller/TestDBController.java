@@ -3,6 +3,8 @@ package com.testall.demo.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.http.HttpRequest;
+import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.poi.excel.ExcelReader;
@@ -29,6 +31,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,22 +46,17 @@ public class TestDBController {
     }
 
 
-    public static void main(String[] args) throws IOException {
-        String str;
-        // 使用 System.in 创建 BufferedReader
-        InputStream in = System.in;
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        System.out.println("输入字符, 输入 'quit' 退出。");
+    public static void main(String[] args)  {
 
-        // 读取字符
-//        do {
-//            //str=br.readLine();
-//            //System.out.println("您输入的字符是:"+str);
-//        } while(!str.equals("quit"));
-        br.close();
+
+        HttpRequest httpRequest = new HttpRequest("");
+        HttpResponse execute = httpRequest.execute();
+        String body = execute.body();
+        System.out.println(body);
 
 
     }
+
 
 
 
