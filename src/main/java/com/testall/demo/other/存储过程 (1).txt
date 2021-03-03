@@ -1,0 +1,185 @@
+create or replace procedure proc_graph_auto is
+
+  v_msg varchar2(1000);
+
+  v_job_name varchar2(100) := 'proc_graph_auto';
+
+begin
+merge into  runims.graph_202009 a
+using (select L_ID ,
+        GRAPH_DATE,
+        协会备案机构类型,
+        地区 ,
+        成立时间,
+        登记时间,
+        员工人数,
+        证券自主管理规模,
+        实际控制人,
+        招证托管产品总数,
+        备案产品数量,
+        我司占比,
+        最大票仓,
+        最大票仓托管数,
+        最大票仓占比,
+        规模贡献,
+        收入贡献,
+        奖项汇总,
+        是否集团公司,
+        同一集团管理人,
+        近半年最大票仓,
+        近半年最大票仓托管数,
+        近半年发行数,
+        最近发行产品时间,
+        最近规模变化值,
+        最近规模增长率,
+        最近规模表现,
+        最近净值增长率,
+        最近净值表现,
+        最近10只产品我司合作数,
+        最近10只券商合作总数,
+        投资市场,
+        是否非标投资,
+        大类资产类型,
+        策略类型,
+        绩效策略排名
+           from runims.graph_202010
+          ) np
+
+  on (a.L_ID = np.L_ID and a.GRAPH_DATE = np.GRAPH_DATE)
+  when matched then
+  update
+       set a.LOG_DATE = np.登记时间,
+     a.PRODUCT_ALL_SIZE = np.招证托管产品总数,
+     a.PRODUCT_SIZE = np.备案产品数量,
+     a.ME_SCALE = np.我司占比,
+     a.MAX_TICKET_SIZE = np.最大票仓托管数,
+     a.MAX_SCALE = np.最大票仓占比,
+     a.MANAGE = np.同一集团管理人,
+     a.ORGAN_TYPE = np.协会备案机构类型,
+     a.region = np.地区,
+     a.FOUND_DATE = np.成立时间,
+     a.STAFF_NUMBER = np.员工人数,
+     a.MANAGE_SCALE = np.证券自主管理规模,
+     a.SCALE_DEVOTE = np.规模贡献,
+     a.INCOME_DEVOTE = np.收入贡献,
+     a.AWARD_ALL = np.奖项汇总,
+     a.COMPANY = np.是否集团公司,
+     a.REAL_MANAGE = np.实际控制人,
+     a.SCALE_CHANGE = np.最近规模变化值,
+     a.SCALE_UPP = np.最近规模增长率,
+     a.SCALE_SHOW = np.最近规模表现,
+     a.UPP = np.最近净值增长率,
+     a.SHOW = np.最近净值表现,
+     a.LATELY_MAX_SIZE = np.近半年最大票仓托管数,
+     a.LATELY_SIZE = np.近半年发行数,
+     a.LATELY_PRODUCT_DATE = np.最近发行产品时间,
+     a.LATELY_PRODUCT_SIZE = np.最近10只产品我司合作数,
+     a.LATELY_WORK_SIZE = np.最近10只券商合作总数,
+     a.MARK = np.投资市场,
+     a.INVEST = np.是否非标投资,
+     a.BIG_PRODUCT_TYPE = np.大类资产类型,
+     a.STATICS_TYPE = np.策略类型,
+     a.STATICS_RANKING = np.绩效策略排名,
+     a.MAX_TICKET = np.最大票仓,
+     a.LATELY_MAX_TICKET = np.近半年最大票仓
+     when not matched then
+    insert
+    (L_ID,
+  GRAPH_DATE,
+  LOG_DATE,
+  PRODUCT_ALL_SIZE,
+  PRODUCT_SIZE ,
+  ME_SCALE ,
+  MAX_TICKET_SIZE,
+  MAX_SCALE,
+  MANAGE,
+  ORGAN_TYPE,
+  region,
+  FOUND_DATE,
+  STAFF_NUMBER,
+  MANAGE_SCALE ,
+  SCALE_DEVOTE ,
+  INCOME_DEVOTE,
+  AWARD_ALL,
+  COMPANY ,
+  REAL_MANAGE,
+  SCALE_CHANGE,
+  SCALE_UPP ,
+  SCALE_SHOW,
+  UPP,
+  SHOW,
+  LATELY_MAX_SIZE,
+  LATELY_SIZE,
+  LATELY_PRODUCT_DATE ,
+  LATELY_PRODUCT_SIZE,
+  LATELY_WORK_SIZE,
+  MARK,
+  INVEST,
+  BIG_PRODUCT_TYPE,
+  STATICS_TYPE,
+  STATICS_RANKING,
+  MAX_TICKET,
+  LATELY_MAX_TICKET
+     )
+     values
+      (np.L_ID,
+       np.GRAPH_DATE,
+     np.登记时间,
+     np.招证托管产品总数,
+     np.备案产品数量,
+     np.我司占比,
+     np.最大票仓托管数,
+     np.最大票仓占比,
+     np.同一集团管理人,
+     np.协会备案机构类型,
+     np.地区,
+     np.成立时间,
+     np.员工人数,
+     np.证券自主管理规模,
+     np.规模贡献,
+     np.收入贡献,
+     np.奖项汇总,
+     np.是否集团公司,
+     np.实际控制人,
+     np.最近规模变化值,
+     np.最近规模增长率,
+     np.最近规模表现,
+     np.最近净值增长率,
+     np.最近净值表现,
+     np.近半年最大票仓托管数,
+     np.近半年发行数,
+     np.最近发行产品时间,
+     np.最近10只产品我司合作数,
+     np.最近10只券商合作总数,
+     np.投资市场,
+     np.是否非标投资,
+     np.大类资产类型,
+     np.策略类型,
+     np.绩效策略排名,
+     np.最大票仓,
+     np.近半年最大票仓);
+commit;
+
+  -- ===============================================================================
+
+  -- 出错处理
+
+  -- ===============================================================================
+
+EXCEPTION
+
+  when others then
+
+    rollback;
+
+    v_msg := '同步失败，原因：' || sqlcode || ':' || sqlerrm ||
+             SUBSTR(DBMS_UTILITY.FORMAT_ERROR_BACKTRACE, 1, 500);
+
+    insert into runims.t_job_error
+      (job_name, ERROR_INFO, error_date)
+    values
+      (v_job_name, v_msg, (select sysdate from dual));
+
+    commit;
+
+end;
