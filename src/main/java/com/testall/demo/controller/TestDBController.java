@@ -3,6 +3,7 @@ package com.testall.demo.controller;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.NumberUtil;
+import cn.hutool.core.util.ZipUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONArray;
@@ -16,6 +17,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.testall.demo.entity.EnumAll;
 import com.testall.demo.service.TestService;
 import com.testall.demo.entity.Test;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.HmacUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Font;
@@ -25,12 +28,14 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import sun.net.www.http.HttpClient;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -46,18 +51,22 @@ public class TestDBController {
     }
 
 
-    public static void main(String[] args)  {
+    private static final String ISO8601_FORMAT = "yyyyMMdd'T'HHmmss'Z'";
+
+    public static String formatISO8601(Date date) {
+        SimpleDateFormat dateTimeFormat = new SimpleDateFormat(ISO8601_FORMAT);
+        dateTimeFormat.setTimeZone(new SimpleTimeZone(0, "UTC"));
+        return dateTimeFormat.format(date);
+    }
+
+    public void pdf(){}
+
+    public static void main(String[] args) throws UnsupportedEncodingException {
 
 
-        HttpRequest httpRequest = new HttpRequest("");
-        HttpResponse execute = httpRequest.execute();
-        String body = execute.body();
-        System.out.println(body);
 
 
     }
-
-
 
 
     //连接数据库测试
@@ -92,8 +101,6 @@ public class TestDBController {
                 .sign(ALGORITHM);
         return token;
     }
-
-
 
 
     //list分页
@@ -196,6 +203,7 @@ public class TestDBController {
             response.setHeader("Content-Disposition", "attachment;fileName=" + URLEncoder.encode(filename, "utf8"));
             byte[] buffer = new byte[1024];
             //输出流
+
             OutputStream os = null;
             try (FileInputStream fis = new FileInputStream(file);
                  BufferedInputStream bis = new BufferedInputStream(fis)) {
@@ -337,20 +345,30 @@ public class TestDBController {
         //输出流
         OutputStream os = null;
         try {
-            List<Test> test = test();
-            String value = test.get(0).getValue();
-            List<Map> maps1 = JSONUtil.toList(new JSONArray(value), Map.class);
+            new Thread();
+            new Thread(()->{
+                System.out.println("aaa");
+            }).start();
+            List<Map<String,String>> maps1=new ArrayList<>();
+            Map<String,String> map=new HashMap<>();
+            map.put("sheet","123");
+            map.put("sheet1","1234");
+            maps1.add(map);
             os = response.getOutputStream();
             ExcelWriter writer = ExcelUtil.getWriter();
             writer.write(maps1);
-            for (int i = 0; i < 5; i++) {
-                writer.autoSizeColumn(i, false);
-            }
-
+            writer.setSheet("test1");
+            writer.write(maps1);
+            writer.setSheet("test2");
+            writer.write(maps1);
+            writer.renameSheet(0,"测试");
+            writer.renameSheet(1,"测试1");
+            writer.renameSheet(2,"测试2");
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(1024);
             writer.flush(byteArrayOutputStream);
             // 关闭writer，释放内存
             writer.close();
+
             byte[] bytes = byteArrayOutputStream.toByteArray();
             os.write(bytes);
         } catch (Exception e) {
@@ -378,7 +396,7 @@ public class TestDBController {
 
         }
 
-        String fileName = path.substring(path.lastIndexOf("/") +1);
+        String fileName = path.substring(path.lastIndexOf("/") + 1);
         /** 将文件名称进行编码 */
         response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
         response.setContentType("content-type:octet-stream");
